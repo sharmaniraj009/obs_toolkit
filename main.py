@@ -1,7 +1,7 @@
 import argparse
 import os
 import sys
-from steganography import encode_image, decode_image, encode_whitespace, decode_whitespace
+from steganography import steganography
 from obfuscate.obfuscator import process_obfuscation
 from deobfuscate.deobfuscator import process_deobfuscation
 
@@ -32,10 +32,10 @@ def main():
                 print("[ERROR] --image and --output parameters are required for steg-image.")
                 sys.exit(1)
             content = open(args.file, "r").read()
-            encode_image(args.image, content, args.output)
+            steganography.encode_image(args.image, content, args.output)
         elif "whitespace" in args.methods:
             content = open(args.file, "r").read()
-            encoded_content = encode_whitespace(content)
+            encoded_content = steganography.encode_whitespace(content)
             with open(f"{args.file}.steg", "w", encoding="utf-8") as f:
                 f.write(encoded_content)
             print(f"[SUCCESS] Data hidden using whitespace steganography in {args.file}.steg")
@@ -48,11 +48,11 @@ def main():
             if not args.image:
                 print("[ERROR] --image parameter is required for steg-image.")
                 sys.exit(1)
-            message = decode_image(args.image)
+            message = steganography.decode_image(args.image)
             print(f"[DECODED MESSAGE]: {message}")
         elif "whitespace" in args.methods:
             encoded_content = open(args.file, "r", encoding="utf-8").read()
-            decoded_message = decode_whitespace(encoded_content)
+            decoded_message = steganography.decode_whitespace(encoded_content)
             print(f"[DECODED MESSAGE]: {decoded_message}")
         else:
             methods = args.methods.split(",")
