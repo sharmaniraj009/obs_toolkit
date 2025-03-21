@@ -1,6 +1,6 @@
 import base64
 # import deobfuscate
-from deobfuscate import deobfuscate
+from deobfuscate import DeObfuscator
 
 
 def test_base64_deobfuscate():

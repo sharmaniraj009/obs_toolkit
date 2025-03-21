@@ -1,27 +1,34 @@
 import argparse
 import os
-from obfuscate import obfuscate
-from deobfuscate import process
+from obfuscate import obfuscator
+from deobfuscate import deobfuscator
 
 def main():
-    parser = argparse.ArgumentParser(prog='Obfuscator & DeObfuscator', description='Obfuscate and DeObfuscate your code')
-    subparsers = parser.add_subparsers(dest='mode', help='Choose the mode of operation: obfuscate or deobfuscate')
-    
-    obfuscate_parser = subparsers.add_parser('obfuscate', help='Obfuscate your code')
-    obfuscate_parser.add_argument('file', help='Input file to obfuscate')
+    parser = argparse.ArgumentParser(description="Obfuscation & Deobfuscation Toolkit")
+    subparsers = parser.add_subparsers(dest="mode", required=True)
 
-    deobfuscate_parser = subparsers.add_parser('deobfuscate', help='DeObfuscate your code')
-    deobfuscate_parser.add_argument('file', help='Input file to deobfuscate')
+    obf_parser = subparsers.add_parser("obfuscate", help="Apply obfuscation techniques")
+    obf_parser.add_argument("file", type=str, help="Path to the input file")
+    obf_parser.add_argument("--methods", type=str, required=True, 
+                            help="Comma-separated obfuscation methods (e.g., base64,xor)")
 
-    args=parser.parse_args()
+    deobf_parser = subparsers.add_parser("deobfuscate", help="Reverse obfuscation techniques")
+    deobf_parser.add_argument("file", type=str, help="Path to the input file")
+    deobf_parser.add_argument("--methods", type=str, required=True, 
+                              help="Comma-separated deobfuscation methods (in reverse order)")
 
+    args = parser.parse_args()
 
-    if args.mode == 'obfuscate':
-        obfuscator.process(args.file)
-    elif args.mode == 'deobfuscate':
-        deobfuscate_process(args.file)
-    else:
-        parser.print_help()
+    if not os.path.exists(args.file):
+        print(f"[ERROR] File '{args.file}' not found.")
+        return
 
-if __name__ == '__main__':
-    main()        
+    methods = args.methods.split(",")
+
+    if args.mode == "obfuscate":
+        process_obfuscation(args.file, methods)
+    elif args.mode == "deobfuscate":
+        process_deobfuscation(args.file, methods)
+
+if __name__ == "__main__":
+    main()

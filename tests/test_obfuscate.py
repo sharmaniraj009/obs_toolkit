@@ -1,5 +1,5 @@
 import base64
-from obfuscate import obfuscate
+from obfuscate import obfuscator
 
 def test_base64_obfuscate():
     input_text = "Lets Obfuscate this text"
