@@ -1,0 +1,4 @@
+numpy
+Pillow
+argparse
+base64
