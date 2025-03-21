@@ -1,4 +1,8 @@
 import base64
+from utils import read
+from utils import write
+
+
 
 def base64_deobfuscate(content):
     try:
@@ -8,29 +12,19 @@ def base64_deobfuscate(content):
         return None
 
 
-def xor_deobfuscate(content, key="secret"):
+def xor_deobfuscate(content, key):
+    if not key:
+        print("[ERROR] XOR key is missing.")
+        sys.exit(1)
     return ''.join(chr(ord(c) ^ ord(key[i % len(key)])) for i, c in enumerate(content))
 
-def process(file_path, methods):
-    with open(file_path, "r") as f:
-        content = f.read()
-
-    print(f"[INFO] Obfuscated Content: {content}")
-    
+def process_deobfuscation(file_path, methods, binary=False, key=None):
+    content = read.read_file(file_path, binary)
     for method in reversed(methods):
-        print(f"[INFO] Applying {method} deobfuscation")
         if method == "base64":
-            content = base64_deobfuscate(content)
+            content = base64_deobfuscate(content) if not binary else base64.b64decode(content)
         elif method == "xor":
-            content = xor_deobfuscate(content)
-        else:
-            print(f"[WARNING] Unknown deobfuscation method '{method}', skipping.")
-
-        if content is None:
-            print("[ERROR] Deobfuscation failed. Exiting...")
-            return
-
+            content = xor_deobfuscate(content, key)
     output_file = f"{file_path}.deobf"
-    with open(output_file, "w") as f:
-        f.write(content)
+    write.write_file(output_file, content, binary)
     print(f"[SUCCESS] Deobfuscated file saved as {output_file}")
