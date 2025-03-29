@@ -16,6 +16,7 @@ def main():
     obf_parser.add_argument("--binary", action="store_true", help="Process file as binary")
     obf_parser.add_argument("--image", type=str, help="Path to input image (for steg-image)")
     obf_parser.add_argument("--output", type=str, help="Output file (for steg-image)")
+    obf_parser.add_argument("--key", type=str, help="Key for XOR encryption")
     
     # ========== DEOBFUSCATION ==========
     deobf_parser = subparsers.add_parser("deobfuscate", help="Reverse obfuscation techniques")
@@ -23,6 +24,7 @@ def main():
     deobf_parser.add_argument("--methods", type=str, required=True, help="Comma-separated deobfuscation methods (in reverse order)")
     deobf_parser.add_argument("--binary", action="store_true", help="Process file as binary")
     deobf_parser.add_argument("--image", type=str, help="Path to steg-image file for extraction")
+    deobf_parser.add_argument("--key", type=str, help="Key for XOR decryption")
 
     args = parser.parse_args()
 
@@ -41,7 +43,7 @@ def main():
             print(f"[SUCCESS] Data hidden using whitespace steganography in {args.file}.steg")
         else:
             methods = args.methods.split(",")
-            process_obfuscation(args.file, methods, args.binary)
+            process_obfuscation(args.file, methods, args.binary, args.key)
 
     elif args.mode == "deobfuscate":
         if "steg-image" in args.methods:
@@ -56,7 +58,7 @@ def main():
             print(f"[DECODED MESSAGE]: {decoded_message}")
         else:
             methods = args.methods.split(",")
-            process_deobfuscation(args.file, methods, args.binary)
+            process_deobfuscation(args.file, methods, args.binary, args.key)
 
 if __name__ == "__main__":
     main()

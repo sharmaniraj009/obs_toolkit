@@ -1,4 +1,5 @@
 import base64
+import sys
 from utils import read
 from utils import write
 
@@ -8,7 +9,7 @@ def base64_obfuscate(content):
 
 def xor_obfuscate(content, key):
     if not key:
-        print("[ERROR] XOR key is missing.")
+        print("[ERROR] XOR key is missing. Use --key parameter when using XOR method.")
         sys.exit(1)
     return ''.join(chr(ord(c) ^ ord(key[i % len(key)])) for i, c in enumerate(content))
 
